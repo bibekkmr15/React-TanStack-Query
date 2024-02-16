@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 
-import { createNewEvent } from "../../util/http.js";
+import { createNewEvent, queryClient } from "../../util/http.js";
 import ErrorBlock from "../UI/ErrorBlock.jsx";
 
 import Modal from "../UI/Modal.jsx";
@@ -11,10 +11,22 @@ export default function NewEvent() {
   const navigate = useNavigate();
 
   const { mutate, isPending, isError, error } = useMutation({
+    // Function that performs the mutation to create a new event
     mutationFn: createNewEvent,
+    // Callback function called when the mutation is successful
+    onSuccess: () => {
+      // Invalidate the "events" query to refetch data from the server
+      queryClient.invalidateQueries({ queryKey: ["events"] });
+      // // Alternatively, invalidate only the exact "events" query
+      // queryClient.invalidateQueries({ queryKey: ["events"], exact: true });
+
+      // Navigate to the "/events" page after successful creation
+      navigate("/events");
+    },
   });
 
   function handleSubmit(formData) {
+    // Call the mutate function with the event data from the form
     mutate({ event: formData });
   }
 

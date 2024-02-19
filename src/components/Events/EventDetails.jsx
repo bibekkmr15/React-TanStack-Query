@@ -17,7 +17,10 @@ export default function EventDetails() {
   const { mutate } = useMutation({
     mutationFn: deleteEvent,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["events"] });
+      queryClient.invalidateQueries({
+        queryKey: ["events"],
+        refetchType: "none",
+      });
       navigate("/events");
     },
   });
@@ -66,7 +69,7 @@ export default function EventDetails() {
           </nav>
         </header>
         <div id="event-details-content">
-          <img src={`http://localhost:5173/${image}`} alt="" />
+          <img src={`http://localhost:3000/${image}`} alt={title} />
           <div id="event-details-info">
             <div>
               <p id="event-details-location">{location}</p>
